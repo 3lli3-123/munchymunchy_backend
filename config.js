@@ -1,0 +1,6 @@
+// backend/config.js
+
+module.exports = {
+  GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_PLACES_API_KEY_PLACEHOLDER',
+  GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY || process.env.GOOGLE_PLACES_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY_PLACEHOLDER',
+};
