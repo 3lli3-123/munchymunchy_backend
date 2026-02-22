@@ -15,21 +15,32 @@ const googleMaps = require('./src/config/googleMaps');
 
 app.use(bodyParser.json());
 
-app.use(cors());          // allow all origins
-app.options('*', cors())
+const allowed = new Set([
+  "https://munchymunchy.com",
+  "https://www.munchymunchy.com",
+  "https://munchymunchy.tech",
+  "https://www.munchymunchy.tech",
+  // "http://localhost:3002", // keep only if still need local dev
+]);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true); // curl/no-origin OK
+    return cb(null, allowed.has(origin));
+  },
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // CORS: allow frontend to call the API
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  next();
-});
+  // app.use((req, res, next) => {
+  //   res.setHeader('Access-Control-Allow-Origin', '*');
+  //   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  //   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  //   if (req.method === 'OPTIONS') return res.sendStatus(200);
+  //   next();
+  // });
 
 // Initialize database on startup
 db.initializeDatabase().catch(console.error);
@@ -805,6 +816,10 @@ function logUserAdjustment(adjustment) {
   // TODO: Store adjustment in PostgreSQL (user adjustments table)
   console.log('User adjustment logged:', adjustment);
 }
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 // // Start server
 // app.listen(PORT, () => {
