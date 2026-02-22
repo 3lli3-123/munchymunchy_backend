@@ -1,7 +1,7 @@
 // backend/index.js
 
 require('dotenv').config(); // load .env into process.env (must be before config)
-
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -12,16 +12,11 @@ const config = require('./config');
 const db = require('./db');
 const axios = require('axios');
 const googleMaps = require('./src/config/googleMaps');
-const cors = require('cors');
 
 app.use(bodyParser.json());
 
-app.use(cors({
-  origin: [
-    "https://munchymunchy.tech",
-    "https://www.munchymunchy.tech"
-  ]
-}));
+app.use(cors());          // allow all origins
+app.options('*', cors())
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -255,7 +250,6 @@ app.get('/places/autocomplete', async (req, res) => {
   }
   try {
     // Print last 4 digits of API key
-    console.log('Using API key ending in:', apiKey.slice(-4));
     const url = 'https://places.googleapis.com/v1/places:autocomplete';
     const body = {
       input,
