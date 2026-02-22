@@ -254,6 +254,8 @@ app.get('/places/autocomplete', async (req, res) => {
     return res.json({ suggestions: [] });
   }
   try {
+    // Print last 4 digits of API key
+    console.log('Using API key ending in:', apiKey.slice(-4));
     const url = 'https://places.googleapis.com/v1/places:autocomplete';
     const body = {
       input,
